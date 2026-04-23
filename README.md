@@ -85,19 +85,30 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 4. Применение миграций
+### 4. Настройка переменных окружения для локальной разработки
+
+При локальном запуске проект может работать и без `.env`, используя текущие значения по умолчанию.  
+При необходимости можно задать, например:
+
+```bash
+export SECRET_KEY="dev-secret-key"
+export DEBUG="True"
+export ALLOWED_HOSTS="127.0.0.1,localhost"
+```
+
+### 5. Применение миграций
 
 ```bash
 python manage.py migrate
 ```
 
-### 5. Заполнение проекта демонстрационными данными
+### 6. Заполнение проекта демонстрационными данными
 
 ```bash
 python manage.py seed_demo_data
 ```
 
-### 6. Запуск сервера разработки
+### 7. Запуск сервера разработки
 
 ```bash
 python manage.py runserver

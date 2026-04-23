@@ -282,32 +282,47 @@ class Command(BaseCommand):
             incident = incidents.get((specimen_code, incident_title)) if incident_title else None
             completed_at = now - timedelta(days=days_offset, hours=2)
 
-            log, created = ResolutionLog.objects.get_or_create(
+            defaults = {
+                'selected_protocol': selected_protocol,
+                'recommended_protocol': recommended_protocol,
+                'final_status_text': final_status_text,
+                'result_summary': result_summary,
+                'system_note': system_note,
+                'was_incident_active': bool(incident),
+                'previous_severity': previous_severity,
+                'previous_resolved_state': previous_resolved_state,
+                'new_severity': new_severity,
+                'new_resolved_state': new_resolved_state,
+                'ui_theme_state': ui_theme_state,
+                'escalation_flag': escalation_flag,
+                'stabilization_flag': stabilization_flag,
+                'completed_at': completed_at,
+            }
+            queryset = ResolutionLog.objects.filter(
                 specimen=specimen,
                 incident=incident,
                 selected_role=role,
+                result_title=result_title,
                 outcome=outcome,
-                completed_at=completed_at,
-                defaults={
-                    'selected_protocol': selected_protocol,
-                    'recommended_protocol': recommended_protocol,
-                    'result_title': result_title,
-                    'final_status_text': final_status_text,
-                    'result_summary': result_summary,
-                    'system_note': system_note,
-                    'was_incident_active': bool(incident),
-                    'previous_severity': previous_severity,
-                    'previous_resolved_state': previous_resolved_state,
-                    'new_severity': new_severity,
-                    'new_resolved_state': new_resolved_state,
-                    'ui_theme_state': ui_theme_state,
-                    'escalation_flag': escalation_flag,
-                    'stabilization_flag': stabilization_flag,
-                },
-            )
-            if created:
+            ).order_by('pk')
+            log = queryset.first()
+            created = log is None
+
+            if log is None:
+                log = ResolutionLog.objects.create(
+                    specimen=specimen,
+                    incident=incident,
+                    selected_role=role,
+                    result_title=result_title,
+                    outcome=outcome,
+                    **defaults,
+                )
                 ResolutionLog.objects.filter(pk=log.pk).update(created_at=completed_at - timedelta(minutes=6))
                 created_logs += 1
+            else:
+                for field, value in defaults.items():
+                    setattr(log, field, value)
+                log.save(update_fields=list(defaults.keys()))
 
         self.stdout.write(
             self.style.SUCCESS(
