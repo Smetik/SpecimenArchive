@@ -1,0 +1,24 @@
+<section class="detail-panel detail-panel-history" id="response-history">
+    <div class="section-heading">
+        <h2>История реагирования</h2>
+    </div>
+    <div class="history-list">
+        {% for log in resolution_history %}
+            <article class="history-entry history-entry-{{ log.ui_theme_state }}">
+                <div class="history-entry-top">
+                    <span class="system-state-pill system-state-pill-{{ log.ui_theme_state }}">{{ log.final_status_text }}</span>
+                    <a href="{{ log.get_absolute_url }}" class="mini-link">{{ log.completed_at|date:"d.m.Y H:i" }}</a>
+                </div>
+                <h3>{{ log.result_title }}</h3>
+                <p>{{ log.result_summary }}</p>
+                <div class="history-entry-meta">
+                    <span>Роль: {{ log.selected_role }}</span>
+                    <span>Выбрано: {{ log.selected_protocol|default:"не применялся" }}</span>
+                    <span>Рекомендовано: {{ log.recommended_protocol|default:"не требовалось" }}</span>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-inline">Для этого инцидента ещё нет истории реагирования.</div>
+        {% endfor %}
+    </div>
+</section>

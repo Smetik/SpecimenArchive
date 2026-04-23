@@ -1,0 +1,35 @@
+{% extends "archive/base.html" %}
+
+{% block title %}{% if form.instance.pk %}Редактирование инцидента{% else %}Новый инцидент{% endif %} | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-form">
+    <section class="page-intro page-intro-tight page-intro-console">
+        <p class="eyebrow">Форма инцидента</p>
+        <h1>{% if form.instance.pk %}Редактирование инцидента{% else %}Добавить инцидент{% endif %}</h1>
+        <p class="page-copy">Укажите связанный образец, описание ситуации и протокол реагирования.</p>
+    </section>
+
+    <section class="form-panel form-panel-console">
+        <form method="post" class="archive-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-row {% if field.field.widget.input_type == 'checkbox' %}form-row-checkbox{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small>{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <div class="page-actions">
+                <button type="submit" class="action-button primary">Сохранить</button>
+                <a href="{% if form.instance.pk %}{% url 'incident_detail' form.instance.pk %}{% else %}{% url 'incident_list' %}{% endif %}" class="action-button">Отмена</a>
+            </div>
+        </form>
+    </section>
+</main>
+{% endblock %}

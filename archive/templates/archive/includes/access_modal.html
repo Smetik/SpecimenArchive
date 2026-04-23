@@ -1,0 +1,321 @@
+<div class="access-modal" id="access-modal" aria-hidden="true" data-execute-url="{% url 'execute_protocol_session' %}">
+    <div class="modal-backdrop js-close-modal"></div>
+    <section
+        class="modal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="access-modal-title"
+        data-step="1"
+    >
+        <button type="button" class="modal-close js-close-modal" aria-label="Закрыть окно">
+            ×
+        </button>
+
+        <div class="modal-header">
+            <p class="eyebrow">Протокол доступа</p>
+            <h2 id="access-modal-title">Досье образца</h2>
+            <p class="modal-subtitle" id="modal-designation">Ожидание запроса доступа</p>
+            <div class="modal-scanline" aria-hidden="true"></div>
+        </div>
+
+        <div class="protocol-progress" aria-hidden="true">
+            <span class="progress-step is-active"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+            <span class="progress-step"></span>
+        </div>
+
+        <div class="protocol-stage is-active" data-step="1">
+            <p class="stage-label">Шаг 1</p>
+            <h3>Запрос доступа</h3>
+            <p class="stage-copy">
+                Система открывает изолированный режим работы с досье, журналом содержания и
+                активными реакциями по образцу. Подтвердите запуск служебной сессии.
+            </p>
+            <div class="access-callout">
+                <span>Служебный режим</span>
+                <strong>Доступ к архиву будет открыт в защищённом контуре</strong>
+            </div>
+            <div class="stage-actions">
+                <button type="button" class="action-button primary" data-next-step="2">
+                    Запросить доступ
+                </button>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="2">
+            <p class="stage-label">Шаг 2</p>
+            <h3>Выбор роли пользователя</h3>
+            <p class="stage-copy">
+                Роль влияет на подачу данных, акценты на экране инцидента и итоговую системную запись.
+            </p>
+            <div class="role-grid">
+                <button type="button" class="select-button" data-role="Исследователь" data-next-step="3">Исследователь</button>
+                <button type="button" class="select-button" data-role="Оператор" data-next-step="3">Оператор</button>
+                <button type="button" class="select-button" data-role="Наблюдатель" data-next-step="3">Наблюдатель</button>
+            </div>
+            <div class="role-note" id="role-note">
+                Система подготовит режим отображения после выбора профиля доступа.
+            </div>
+        </div>
+
+        <div class="protocol-stage protocol-stage-loading" data-step="3">
+            <p class="stage-label">Шаг 3</p>
+            <h3>Системная расшифровка</h3>
+            <p class="stage-copy" id="processing-copy">
+                Выполняется сверка уровня допуска, журнала содержания и активного статуса инцидента.
+            </p>
+            <ul class="processing-log" id="processing-log">
+                <li>Проверка служебной роли</li>
+                <li>Сопоставление сводки образца</li>
+                <li>Анализ неустранённых инцидентов</li>
+                <li>Сверка контуров содержания</li>
+                <li>Формирование окна реакции</li>
+            </ul>
+            <div class="processing-shell" aria-hidden="true">
+                <div class="processing-grid">
+                    <span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="processing-beam"></div>
+            </div>
+            <div class="loading-bar" aria-hidden="true">
+                <span></span>
+            </div>
+            <div class="loading-points" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="4">
+            <p class="stage-label">Шаг 4</p>
+            <h3>Досье загружено</h3>
+            <p class="stage-copy" id="role-brief">
+                Система подготовила рабочий срез данных по образцу и текущему режиму доступа.
+            </p>
+            <div class="dossier-grid">
+                <div class="dossier-card">
+                    <span>Обозначение</span>
+                    <strong id="dossier-code">-</strong>
+                </div>
+                <div class="dossier-card">
+                    <span>Статус</span>
+                    <strong id="dossier-status">-</strong>
+                </div>
+                <div class="dossier-card">
+                    <span>Уровень угрозы</span>
+                    <strong id="dossier-threat">-</strong>
+                </div>
+                <div class="dossier-card">
+                    <span>Контур доступа</span>
+                    <strong id="dossier-role">-</strong>
+                </div>
+                <div class="dossier-card dossier-card-wide">
+                    <span>Наименование</span>
+                    <strong id="dossier-title">-</strong>
+                </div>
+                <div class="dossier-card dossier-card-wide">
+                    <span>Сводка</span>
+                    <strong id="dossier-summary">-</strong>
+                </div>
+                <div class="dossier-card dossier-card-wide">
+                    <span>Протокол содержания</span>
+                    <strong id="dossier-containment">-</strong>
+                </div>
+            </div>
+            <div class="stage-actions">
+                <button type="button" class="action-button primary" data-next-step="5">
+                    Продолжить
+                </button>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="5">
+            <p class="stage-label">Шаг 5</p>
+            <h3>Системная ситуация</h3>
+            <div class="incident-mode-banner" id="incident-mode-banner">
+                <span class="system-state-pill system-state-pill-alert" id="incident-mode-pill">Активный контур</span>
+                <strong id="incident-mode-title">Требуется решение</strong>
+                <p id="incident-mode-copy">Система ожидает подтверждённого вмешательства.</p>
+            </div>
+            <div class="incident-console" id="incident-console">
+                <div class="incident-console-head">
+                    <div>
+                        <span class="incident-console-label" id="incident-console-label">Окно реакции открыто</span>
+                        <h4 id="incident-title">-</h4>
+                    </div>
+                    <div class="incident-console-flags">
+                        <span class="incident-pill" id="incident-severity-pill">-</span>
+                        <span class="incident-pill incident-pill-open" id="incident-state-pill">Требуется решение</span>
+                    </div>
+                </div>
+                <p class="incident-console-copy" id="incident-description">-</p>
+                <div class="incident-console-grid">
+                    <div class="incident-console-card">
+                        <span id="incident-protocol-label">Рекомендация системы</span>
+                        <strong id="incident-protocol">-</strong>
+                    </div>
+                    <div class="incident-console-card">
+                        <span>Роль доступа</span>
+                        <strong id="incident-role-context">-</strong>
+                    </div>
+                    <div class="incident-console-card incident-console-card-wide">
+                        <span>Ограничение системы</span>
+                        <strong id="incident-brief">Выберите протокол реагирования.</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="stage-actions">
+                <button type="button" class="action-button primary" id="incident-advance-button" data-next-step="6">
+                    Перейти к решению
+                </button>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="6">
+            <p class="stage-label">Шаг 6</p>
+            <h3>Выбор протокола реагирования</h3>
+            <p class="stage-copy" id="response-copy">
+                Система ожидает подтверждённого решения. Выбранный протокол определит исход текущего инцидента.
+            </p>
+            <div class="response-grid" id="response-grid">
+                <button type="button" class="select-button" data-action="Изолировать" data-next-step="7">Изолировать</button>
+                <button type="button" class="select-button" data-action="Карантин" data-next-step="7">Карантин</button>
+                <button type="button" class="select-button" data-action="Наблюдение" data-next-step="7">Наблюдение</button>
+            </div>
+            <div class="response-hint" id="response-hint">
+                После выбора система применит меры, выполнит сверку параметров и зафиксирует новый статус.
+            </div>
+            <div class="response-error" id="response-error" hidden></div>
+            <div class="review-only-note" id="review-only-note" hidden>
+                Активный инцидент отсутствует. Для этого образца доступен только режим просмотра без применения протокола.
+            </div>
+            <div class="stage-actions" id="review-only-actions" hidden>
+                <button type="button" class="action-button primary" data-action="" data-next-step="7">
+                    Зафиксировать просмотр
+                </button>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="7">
+            <p class="stage-label">Шаг 7</p>
+            <h3>Применение протокола</h3>
+            <p class="stage-copy" id="execution-copy">
+                Система запускает выполнение выбранного сценария и проверяет изменение параметров.
+            </p>
+            <div class="execution-track" id="execution-track">
+                <div class="execution-step">
+                    <span>Протокол принят</span>
+                    <strong>Ожидание запуска</strong>
+                </div>
+                <div class="execution-step">
+                    <span>Применение мер</span>
+                    <strong>Ожидание запуска</strong>
+                </div>
+                <div class="execution-step">
+                    <span>Сверка параметров</span>
+                    <strong>Ожидание запуска</strong>
+                </div>
+                <div class="execution-step">
+                    <span>Подтверждение статуса</span>
+                    <strong>Ожидание запуска</strong>
+                </div>
+            </div>
+            <div class="loading-bar execution-loading" aria-hidden="true">
+                <span></span>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="8">
+            <p class="stage-label">Шаг 8</p>
+            <h3>Результат вмешательства</h3>
+            <div class="outcome-banner" id="outcome-banner">
+                <span class="outcome-pill" id="outcome-pill">-</span>
+                <strong id="outcome-title">Результат будет сформирован после выбора протокола.</strong>
+                <p id="protocol-result">Системное сообщение будет сформировано после выбора действия.</p>
+            </div>
+            <div class="result-grid">
+                <div class="journal-card">
+                    <span>Выбранный протокол</span>
+                    <strong id="result-selected-protocol">-</strong>
+                </div>
+                <div class="journal-card">
+                    <span>Рекомендованный протокол</span>
+                    <strong id="result-recommended-protocol">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Контекст роли</span>
+                    <strong id="result-role-summary">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Системная заметка</span>
+                    <strong id="result-system-note">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Почему выбран такой исход</span>
+                    <strong id="result-outcome-reason">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Что произошло с инцидентом</span>
+                    <strong id="result-incident-change">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Что произошло с образцом</span>
+                    <strong id="result-specimen-change">-</strong>
+                </div>
+            </div>
+            <div class="stage-actions">
+                <button type="button" class="action-button primary" data-next-step="9">
+                    Посмотреть журнал решения
+                </button>
+            </div>
+        </div>
+
+        <div class="protocol-stage" data-step="9">
+            <p class="stage-label">Шаг 9</p>
+            <h3>Журнал решения</h3>
+            <div class="journal-grid">
+                <div class="journal-card">
+                    <span>Роль</span>
+                    <strong id="journal-role">-</strong>
+                </div>
+                <div class="journal-card">
+                    <span>Протокол</span>
+                    <strong id="journal-action">-</strong>
+                </div>
+                <div class="journal-card">
+                    <span>Время</span>
+                    <strong id="journal-time">-</strong>
+                </div>
+                <div class="journal-card">
+                    <span>Итоговый статус</span>
+                    <strong id="journal-status">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Результат</span>
+                    <strong id="journal-summary">-</strong>
+                </div>
+                <div class="journal-card journal-card-wide">
+                    <span>Системная заметка</span>
+                    <strong id="journal-note">-</strong>
+                </div>
+            </div>
+            <div class="protocol-seal" aria-hidden="true">
+                <span>Протокол зафиксирован</span>
+            </div>
+            <div class="stage-actions stage-actions-final">
+                <a href="#" id="final-session-link" class="action-button primary">Открыть запись решения</a>
+                <a href="#" id="final-incident-link" class="action-button" hidden>Перейти к инциденту</a>
+                <a href="#" id="final-history-link" class="action-button">Посмотреть историю</a>
+                <button type="button" class="action-button js-close-modal">Вернуться в архив</button>
+            </div>
+        </div>
+    </section>
+</div>

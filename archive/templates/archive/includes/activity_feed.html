@@ -1,0 +1,20 @@
+<div class="activity-feed">
+    {% for log in recent_logs %}
+        <article class="activity-item activity-item-{{ log.ui_theme_state }}">
+            <div class="activity-item-top">
+                <span class="system-state-pill system-state-pill-{{ log.ui_theme_state }}">{{ log.final_status_text }}</span>
+                <span class="activity-time">{{ log.completed_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            <h3>
+                <a href="{{ log.get_absolute_url }}">{{ log.specimen.code }} — {{ log.specimen.name }}</a>
+            </h3>
+            <p>{{ log.result_summary|truncatechars:150 }}</p>
+        </article>
+    {% empty %}
+        <article class="empty-state empty-state-compact">
+            <p class="eyebrow">Журнал пуст</p>
+            <h2>История вмешательств пока отсутствует</h2>
+            <p>После выполнения первого протокола здесь появятся последние действия системы.</p>
+        </article>
+    {% endfor %}
+</div>

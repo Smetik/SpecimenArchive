@@ -1,0 +1,57 @@
+{% extends "archive/base.html" %}
+
+{% block title %}{{ incident.title }} | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-detail">
+    <section class="page-intro page-intro-tight page-intro-console incident-hero incident-hero-{% if incident.severity == 'Критический' %}critical{% elif incident.severity == 'Высокий' %}high{% elif incident.severity == 'Средний' %}medium{% else %}low{% endif %}">
+        <div class="header-badges">
+            <p class="eyebrow">{{ incident.severity }}</p>
+            <span class="incident-pill incident-pill-{% if incident.is_resolved %}resolved{% else %}open{% endif %}">
+                {% if incident.is_resolved %}Устранён{% else %}Открыт{% endif %}
+            </span>
+            <span class="system-state-pill system-state-pill-{{ incident.current_system_state_class }}">{{ incident.current_system_state }}</span>
+        </div>
+        <h1>{{ incident.title }}</h1>
+        <p class="page-copy">
+            Связанный образец:
+            <a href="{% url 'specimen_detail' incident.specimen.pk %}" class="inline-link">
+                {{ incident.specimen.code }} — {{ incident.specimen.name }}
+            </a>
+        </p>
+    </section>
+
+    <section class="detail-panel detail-panel-primary">
+        <div class="detail-grid">
+            <div class="detail-item detail-item-wide">
+                <span>Описание</span>
+                <strong>{{ incident.description }}</strong>
+            </div>
+            <div class="detail-item detail-item-wide">
+                <span>Рекомендуемый протокол</span>
+                <strong>{{ incident.response_protocol }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Серьёзность</span>
+                <strong>{{ incident.severity }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Статус устранения</span>
+                <strong>{% if incident.is_resolved %}Устранён{% else %}Не устранён{% endif %}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Дата создания</span>
+                <strong>{{ incident.created_at|date:"d.m.Y H:i" }}</strong>
+            </div>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'incident_update' incident.pk %}" class="action-button primary">Редактировать</a>
+            <a href="{% url 'incident_delete' incident.pk %}" class="action-button">Удалить</a>
+        </div>
+    </section>
+
+    <section id="incident-history-panel">
+        {% include "archive/includes/incident_history.html" %}
+    </section>
+</main>
+{% endblock %}

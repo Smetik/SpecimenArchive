@@ -1,0 +1,51 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Сессия доступа | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-detail">
+    <section class="page-intro page-intro-tight page-intro-console">
+        <div class="header-badges">
+            <p class="eyebrow">Сессия доступа</p>
+            <span class="system-state-pill system-state-pill-{{ session.ui_theme_state }}">{{ session.final_status_text }}</span>
+        </div>
+        <h1>{{ session.specimen.code }} — {{ session.specimen.name }}</h1>
+        <p class="page-copy">{{ session.result_title }}</p>
+    </section>
+
+    <section class="detail-panel detail-panel-primary">
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span>Роль</span>
+                <strong>{{ session.selected_role }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Выбранный протокол</span>
+                <strong>{{ session.selected_protocol|default:"не применялся" }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Рекомендованный протокол</span>
+                <strong>{{ session.recommended_protocol|default:"не требовался" }}</strong>
+            </div>
+            <div class="detail-item">
+                <span>Завершено</span>
+                <strong>{{ session.completed_at|date:"d.m.Y H:i" }}</strong>
+            </div>
+            <div class="detail-item detail-item-wide">
+                <span>Итог</span>
+                <strong>{{ session.result_summary }}</strong>
+            </div>
+            <div class="detail-item detail-item-wide">
+                <span>Системная заметка</span>
+                <strong>{{ session.system_note }}</strong>
+            </div>
+        </div>
+        <div class="page-actions">
+            <a href="{{ session.specimen.get_absolute_url }}#access-history" class="action-button primary">К истории образца</a>
+            {% if session.incident %}
+                <a href="{{ session.incident.get_absolute_url }}#response-history" class="action-button">К инциденту</a>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock %}

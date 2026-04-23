@@ -1,0 +1,49 @@
+<div class="history-stack">
+    <section class="detail-panel detail-panel-history">
+        <div class="section-heading">
+            <h2>Последняя сессия доступа</h2>
+        </div>
+        {% if latest_session %}
+            <article class="session-summary session-summary-{{ latest_session.ui_theme_state }}">
+                <div class="session-summary-top">
+                    <span class="system-state-pill system-state-pill-{{ latest_session.ui_theme_state }}">{{ latest_session.final_status_text }}</span>
+                    <a href="{{ latest_session.get_absolute_url }}" class="mini-link">Открыть запись</a>
+                </div>
+                <h3>{{ latest_session.result_title }}</h3>
+                <p>{{ latest_session.result_summary }}</p>
+                <div class="session-summary-meta">
+                    <span>Роль: {{ latest_session.selected_role }}</span>
+                    <span>Протокол: {{ latest_session.selected_protocol|default:"не применялся" }}</span>
+                    <span>{{ latest_session.completed_at|date:"d.m.Y H:i" }}</span>
+                </div>
+            </article>
+        {% else %}
+            <div class="empty-inline">Для этого образца ещё не проводились сессии доступа.</div>
+        {% endif %}
+    </section>
+
+    <section class="detail-panel detail-panel-history" id="access-history">
+        <div class="section-heading">
+            <h2>История вмешательств</h2>
+        </div>
+        <div class="history-list">
+            {% for log in resolution_history %}
+                <article class="history-entry history-entry-{{ log.ui_theme_state }}">
+                    <div class="history-entry-top">
+                        <span class="system-state-pill system-state-pill-{{ log.ui_theme_state }}">{{ log.final_status_text }}</span>
+                        <a href="{{ log.get_absolute_url }}" class="mini-link">{{ log.completed_at|date:"d.m.Y H:i" }}</a>
+                    </div>
+                    <h3>{{ log.result_title }}</h3>
+                    <p>{{ log.result_summary }}</p>
+                    <div class="history-entry-meta">
+                        <span>Роль: {{ log.selected_role }}</span>
+                        <span>Выбранный протокол: {{ log.selected_protocol|default:"не применялся" }}</span>
+                        <span>Рекомендовано: {{ log.recommended_protocol|default:"не требовалось" }}</span>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-inline">История вмешательств пока отсутствует.</div>
+            {% endfor %}
+        </div>
+    </section>
+</div>

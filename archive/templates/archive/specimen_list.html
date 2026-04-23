@@ -1,0 +1,88 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Образцы | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-index">
+    <section class="page-intro page-intro-console">
+        <p class="eyebrow">Реестр образцов</p>
+        <h1>Образцы</h1>
+        <p class="page-copy">
+            Полный список экспериментальных биообразцов с режимами содержания и краткими досье.
+        </p>
+    </section>
+
+    <section class="filter-panel filter-panel-compact filter-panel-console">
+        <form
+            id="specimen-filter-form"
+            class="filter-toolbar"
+            action="{% url 'specimen_filter' %}"
+            method="get"
+            data-filter-form
+            data-results-id="specimen-results"
+            data-count-id="specimen-filter-count"
+            data-loading-id="specimen-filter-loading"
+        >
+            <div class="filter-field filter-field-search">
+                <label for="filter-q">Поиск по коду и названию</label>
+                <input
+                    id="filter-q"
+                    type="search"
+                    name="q"
+                    class="form-control"
+                    placeholder="Например, SA-07 или Пелагическая масса"
+                    value="{{ filters.q }}"
+                >
+            </div>
+            <div class="filter-field">
+                <label for="filter-status">Статус содержания</label>
+                <select id="filter-status" name="status" class="form-control">
+                    <option value="">Все статусы</option>
+                    {% for status in status_options %}
+                        <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="filter-threat-level">Уровень угрозы</label>
+                <select id="filter-threat-level" name="threat_level" class="form-control">
+                    <option value="">Все уровни</option>
+                    {% for threat_level in threat_level_options %}
+                        <option value="{{ threat_level }}" {% if filters.threat_level == threat_level %}selected{% endif %}>{{ threat_level }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="filter-activity">Активность</label>
+                <select id="filter-activity" name="activity" class="form-control">
+                    <option value="all" {% if filters.activity == 'all' %}selected{% endif %}>Все</option>
+                    <option value="active" {% if filters.activity == 'active' %}selected{% endif %}>Только активные</option>
+                    <option value="inactive" {% if filters.activity == 'inactive' %}selected{% endif %}>Только неактивные</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="action-button filter-reset-button" data-filter-reset>Сбросить</button>
+            </div>
+        </form>
+        <div class="filter-meta">
+            <p id="specimen-filter-count" class="filter-count">{{ specimen_count_text }}</p>
+            <div id="specimen-filter-loading" class="filter-loading-indicator" hidden>
+                <span></span><span></span><span></span>
+                <strong>Обновление списка</strong>
+            </div>
+        </div>
+    </section>
+
+    <section
+        id="specimen-results"
+        class="specimen-grid"
+        aria-label="Список образцов"
+        data-endpoint="{% url 'specimen_filter' %}"
+        data-filter-results
+    >
+        {% include "archive/includes/specimen_cards.html" %}
+    </section>
+</main>
+
+{% include "archive/includes/access_modal.html" %}
+{% endblock %}

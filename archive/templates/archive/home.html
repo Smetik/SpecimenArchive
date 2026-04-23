@@ -1,0 +1,115 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="home-page">
+    <section class="hero hero-console">
+        <div class="hero-grid">
+            <div class="hero-copy-block">
+                <p class="eyebrow">Внутренний контур архива</p>
+                <h1>Specimen Archive</h1>
+                <p class="hero-copy">
+                    Архив экспериментальных биообразцов и биоинцидентов для внутреннего доступа.
+                    Здесь собраны карточки содержания, журналы реагирования и краткие досье,
+                    помогающие быстро сверить режим хранения и порядок действий по инциденту.
+                </p>
+                <div class="hero-tags">
+                    <span class="system-chip">Контур содержания</span>
+                    <span class="system-chip">Журнал реагирования</span>
+                    <span class="system-chip">Внутренний доступ</span>
+                </div>
+            </div>
+            <aside class="hero-side">
+                <div class="hero-status-card">
+                    <span>Активных образцов</span>
+                    <strong>{{ specimens|length }}</strong>
+                </div>
+                <div class="hero-status-card">
+                    <span>Режим системы</span>
+                    <strong>Контур доступа</strong>
+                </div>
+                <div class="hero-status-card hero-status-card-wide">
+                    <span>Текущий приоритет</span>
+                    <strong>{{ current_priority }}</strong>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <section class="activity-strip">
+        <div class="section-heading section-heading-inline">
+            <div>
+                <p class="eyebrow">Журнал активности</p>
+                <h2>Последние действия системы</h2>
+            </div>
+        </div>
+        <div id="activity-feed">
+            {% include "archive/includes/activity_feed.html" %}
+        </div>
+    </section>
+
+    <section class="specimen-grid" aria-label="Карточки образцов">
+        {% for specimen in specimens %}
+            {% with incident=specimen.active_incident latest_session=specimen.latest_resolution %}
+            <article class="specimen-card specimen-card-hero">
+                <div class="card-meta">
+                    <span class="designation">{{ specimen.code }}</span>
+                    <span class="status" data-specimen-status-plain data-specimen-id="{{ specimen.pk }}">{{ specimen.status }}</span>
+                </div>
+                <div class="card-flags">
+                    <span class="status-pill" data-specimen-status-pill data-specimen-id="{{ specimen.pk }}">{{ specimen.status }}</span>
+                    <span class="threat-pill threat-pill-{% if specimen.threat_level == 'Критический' %}critical{% elif specimen.threat_level == 'Высокий' %}high{% elif specimen.threat_level == 'Средний' %}medium{% else %}low{% endif %}" data-specimen-threat-pill data-specimen-id="{{ specimen.pk }}">
+                        {{ specimen.threat_level }}
+                    </span>
+                    <span class="system-state-pill system-state-pill-{{ specimen.current_system_state_class }}" data-specimen-state-pill data-specimen-id="{{ specimen.pk }}">
+                        {{ specimen.current_system_state }}
+                    </span>
+                </div>
+                <h2>{{ specimen.name }}</h2>
+                <p>{{ specimen.short_description }}</p>
+                {% if latest_session %}
+                    <div class="card-journal-snippet">
+                        <span>Последняя фиксация</span>
+                        <strong>{{ latest_session.get_outcome_display }} · {{ latest_session.completed_at|date:"d.m.Y H:i" }}</strong>
+                    </div>
+                {% endif %}
+                <button
+                    type="button"
+                    class="card-button js-open-dossier"
+                    data-specimen-id="{{ specimen.pk }}"
+                    data-designation="{{ specimen.code }}"
+                    data-title="{{ specimen.name }}"
+                    data-status="{{ specimen.status }}"
+                    data-threat="{{ specimen.threat_level }}"
+                    data-summary="{{ specimen.summary }}"
+                    data-containment="{{ specimen.containment_protocol }}"
+                    data-current-state="{{ specimen.current_system_state }}"
+                    data-incident-title="{% if incident %}{{ incident.title }}{% else %}Активных инцидентов нет{% endif %}"
+                    data-incident-description="{% if incident %}{{ incident.description }}{% else %}По текущему образцу не найдено неустранённых инцидентов. Досье откроется в режиме просмотра без вмешательства в систему.{% endif %}"
+                    data-incident-severity="{% if incident %}{{ incident.severity }}{% else %}{{ specimen.threat_level }}{% endif %}"
+                    data-incident-protocol="{% if incident %}{{ incident.response_protocol }}{% else %}{% endif %}"
+                    data-incident-resolved="{% if incident and incident.is_resolved %}true{% else %}false{% endif %}"
+                    data-incident-created="{% if incident %}{{ incident.created_at|date:'d.m.Y H:i' }}{% else %}Текущая сессия{% endif %}"
+                    data-incident-id="{% if incident %}{{ incident.pk }}{% endif %}"
+                    data-has-active-incident="{% if incident %}true{% else %}false{% endif %}"
+                >
+                    Открыть досье
+                </button>
+            </article>
+            {% endwith %}
+        {% empty %}
+            <article class="empty-state">
+                <p class="eyebrow">Архив пуст</p>
+                <h2>Образцы пока отсутствуют</h2>
+                <p>
+                    В базе ещё нет активных записей. Добавьте образцы через административный
+                    интерфейс, чтобы карточки и досье появились на главной странице.
+                </p>
+            </article>
+        {% endfor %}
+    </section>
+</main>
+
+{% include "archive/includes/access_modal.html" %}
+{% endblock %}

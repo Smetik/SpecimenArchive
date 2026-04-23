@@ -1,0 +1,18 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Удаление образца | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-form">
+    <section class="confirm-panel form-panel-console">
+        <p class="eyebrow">Подтверждение удаления</p>
+        <h1>Удалить образец {{ object.code }}?</h1>
+        <p class="page-copy">Будет удалён образец «{{ object.name }}» и связанные с ним инциденты.</p>
+        <form method="post" class="confirm-actions">
+            {% csrf_token %}
+            <button type="submit" class="action-button primary">Удалить запись</button>
+            <a href="{% url 'specimen_detail' object.pk %}" class="action-button">Отмена</a>
+        </form>
+    </section>
+</main>
+{% endblock %}

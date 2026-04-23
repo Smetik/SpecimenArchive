@@ -1,0 +1,85 @@
+{% extends "archive/base.html" %}
+
+{% block title %}Инциденты | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-index">
+    <section class="page-intro page-intro-console">
+        <p class="eyebrow">Журнал инцидентов</p>
+        <h1>Инциденты</h1>
+        <p class="page-copy">Все зарегистрированные биоинциденты, связанные образцы и протоколы реагирования.</p>
+    </section>
+
+    <section class="filter-panel filter-panel-compact filter-panel-console">
+        <form
+            id="incident-filter-form"
+            class="filter-toolbar filter-toolbar-incidents"
+            action="{% url 'incident_filter' %}"
+            method="get"
+            data-filter-form
+            data-results-id="incident-results"
+            data-count-id="incident-filter-count"
+            data-loading-id="incident-filter-loading"
+        >
+            <div class="filter-field filter-field-search">
+                <label for="incident-filter-q">Поиск по названию и описанию</label>
+                <input
+                    id="incident-filter-q"
+                    type="search"
+                    name="q"
+                    class="form-control"
+                    placeholder="Например, утечка, перенос, сектор B"
+                    value="{{ incident_filters.q }}"
+                >
+            </div>
+            <div class="filter-field">
+                <label for="incident-filter-severity">Серьёзность</label>
+                <select id="incident-filter-severity" name="severity" class="form-control">
+                    <option value="">Все уровни</option>
+                    {% for severity in severity_options %}
+                        <option value="{{ severity }}" {% if incident_filters.severity == severity %}selected{% endif %}>{{ severity }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="incident-filter-resolved">Статус</label>
+                <select id="incident-filter-resolved" name="resolved" class="form-control">
+                    <option value="all" {% if incident_filters.resolved == 'all' %}selected{% endif %}>Все</option>
+                    <option value="open" {% if incident_filters.resolved == 'open' %}selected{% endif %}>Только открытые</option>
+                    <option value="resolved" {% if incident_filters.resolved == 'resolved' %}selected{% endif %}>Только устранённые</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="incident-filter-specimen">Образец</label>
+                <select id="incident-filter-specimen" name="specimen" class="form-control">
+                    <option value="">Все образцы</option>
+                    {% for specimen in specimen_options %}
+                        <option value="{{ specimen.pk }}" {% if incident_filters.specimen == specimen.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ specimen.code }} — {{ specimen.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="action-button filter-reset-button" data-filter-reset>Сбросить</button>
+            </div>
+        </form>
+        <div class="filter-meta">
+            <p id="incident-filter-count" class="filter-count">{{ incident_count_text }}</p>
+            <div id="incident-filter-loading" class="filter-loading-indicator" hidden>
+                <span></span><span></span><span></span>
+                <strong>Обновление журнала</strong>
+            </div>
+        </div>
+    </section>
+
+    <section
+        id="incident-results"
+        class="stack-grid"
+        data-endpoint="{% url 'incident_filter' %}"
+        data-filter-results
+    >
+        {% include "archive/includes/incident_cards.html" %}
+    </section>
+</main>
+{% endblock %}

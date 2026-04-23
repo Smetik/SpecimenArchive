@@ -1,0 +1,85 @@
+{% extends "archive/base.html" %}
+
+{% block title %}{{ specimen.name }} | Specimen Archive{% endblock %}
+
+{% block content %}
+<main class="content-page content-page-detail">
+    <section class="page-intro page-intro-tight page-intro-console">
+        <div class="header-badges">
+            <p class="eyebrow">{{ specimen.code }}</p>
+            <span class="status-pill">{{ specimen.status }}</span>
+            <span class="threat-pill threat-pill-{% if specimen.threat_level == 'Критический' %}critical{% elif specimen.threat_level == 'Высокий' %}high{% elif specimen.threat_level == 'Средний' %}medium{% else %}low{% endif %}">
+                {{ specimen.threat_level }}
+            </span>
+            <span class="system-state-pill system-state-pill-{{ specimen.current_system_state_class }}">{{ specimen.current_system_state }}</span>
+        </div>
+        <h1>{{ specimen.name }}</h1>
+        <p class="page-copy">{{ specimen.short_description }}</p>
+    </section>
+
+    <section class="detail-layout">
+        <article class="detail-panel detail-panel-primary">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span>Статус содержания</span>
+                    <strong>{{ specimen.status }}</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Уровень угрозы</span>
+                    <strong>{{ specimen.threat_level }}</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Активность</span>
+                    <strong>{% if specimen.is_active %}Активен{% else %}Неактивен{% endif %}</strong>
+                </div>
+                <div class="detail-item">
+                    <span>Дата создания</span>
+                    <strong>{{ specimen.created_at|date:"d.m.Y H:i" }}</strong>
+                </div>
+                <div class="detail-item detail-item-wide">
+                    <span>Сводка</span>
+                    <strong>{{ specimen.summary }}</strong>
+                </div>
+                <div class="detail-item detail-item-wide">
+                    <span>Протокол содержания</span>
+                    <strong>{{ specimen.containment_protocol }}</strong>
+                </div>
+            </div>
+            <div class="page-actions">
+                <a href="{% url 'specimen_update' specimen.pk %}" class="action-button primary">Редактировать</a>
+                <a href="{% url 'specimen_delete' specimen.pk %}" class="action-button">Удалить</a>
+            </div>
+        </article>
+
+        <aside class="detail-panel detail-panel-secondary">
+            <div class="section-heading">
+                <h2>Связанные инциденты</h2>
+                <a href="{% url 'incident_create' %}" class="mini-link">Добавить инцидент</a>
+            </div>
+            <div class="related-list">
+                {% for incident in specimen.incidents.all %}
+                    <article class="related-card">
+                        <div class="related-card-head">
+                            <p class="eyebrow">{{ incident.severity }}</p>
+                            <span class="incident-pill incident-pill-{% if incident.is_resolved %}resolved{% else %}open{% endif %}">
+                                {% if incident.is_resolved %}Устранён{% else %}Открыт{% endif %}
+                            </span>
+                        </div>
+                        <h3><a href="{% url 'incident_detail' incident.pk %}">{{ incident.title }}</a></h3>
+                        <p>{{ incident.description|truncatechars:150 }}</p>
+                        <span class="related-meta">
+                            {{ incident.created_at|date:"d.m.Y" }}
+                        </span>
+                    </article>
+                {% empty %}
+                    <div class="empty-inline">Для этого образца пока нет зарегистрированных инцидентов.</div>
+                {% endfor %}
+            </div>
+        </aside>
+    </section>
+
+    <section id="specimen-history-panel">
+        {% include "archive/includes/specimen_history.html" %}
+    </section>
+</main>
+{% endblock %}

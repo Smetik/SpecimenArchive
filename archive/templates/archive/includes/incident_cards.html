@@ -1,0 +1,37 @@
+{% for incident in incidents %}
+    <article class="list-card incident-card incident-card-{% if incident.severity == 'Критический' %}critical{% elif incident.severity == 'Высокий' %}high{% elif incident.severity == 'Средний' %}medium{% else %}low{% endif %}">
+        <div class="list-card-top">
+            <div>
+                <p class="eyebrow" data-incident-severity-text data-incident-id="{{ incident.pk }}">{{ incident.severity }}</p>
+                <h2>{{ incident.title }}</h2>
+            </div>
+            <div class="list-card-statuses">
+                <span class="incident-pill incident-pill-{% if incident.is_resolved %}resolved{% else %}open{% endif %}" data-incident-open-pill data-incident-id="{{ incident.pk }}">
+                    {% if incident.is_resolved %}Устранён{% else %}Открыт{% endif %}
+                </span>
+                <span class="system-state-pill system-state-pill-{{ incident.current_system_state_class }}" data-incident-state-pill data-incident-id="{{ incident.pk }}">{{ incident.current_system_state }}</span>
+            </div>
+        </div>
+        <p class="list-copy">{{ incident.description|truncatechars:220 }}</p>
+        {% if incident.latest_resolution %}
+            <div class="card-journal-snippet">
+                <span>Последнее реагирование</span>
+                <strong>{{ incident.latest_resolution.get_outcome_display }} · {{ incident.latest_resolution.completed_at|date:"d.m.Y H:i" }}</strong>
+            </div>
+        {% endif %}
+        <div class="list-meta">
+            <span>Образец: <a href="{% url 'specimen_detail' incident.specimen.pk %}">{{ incident.specimen.code }}</a></span>
+            <span>{{ incident.created_at|date:"d.m.Y H:i" }}</span>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'incident_detail' incident.pk %}" class="action-button primary">Подробнее</a>
+            <a href="{% url 'incident_update' incident.pk %}" class="action-button">Редактировать</a>
+        </div>
+    </article>
+{% empty %}
+    <article class="empty-state">
+        <p class="eyebrow">Ничего не найдено</p>
+        <h2>Подходящие инциденты отсутствуют</h2>
+        <p>Измените параметры поиска или сбросьте фильтры, чтобы увидеть другие записи.</p>
+    </article>
+{% endfor %}
